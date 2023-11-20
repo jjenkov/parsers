@@ -27,6 +27,7 @@ about their characteristics (code size, performance etc.).
 
 
 - [BasicTokenizer](https://github.com/jjenkov/parsers/blob/main/src/main/java/com/jenkov/parsers/tokenizers/BasicTokenizer.java)
+- [BasicTokenizerMethodized](https://github.com/jjenkov/parsers/blob/main/src/main/java/com/jenkov/parsers/tokenizers/BasicTokenizerMethodized.java)
 
 
 

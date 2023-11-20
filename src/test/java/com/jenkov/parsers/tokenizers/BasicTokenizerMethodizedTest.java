@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class BasicTokenizerTest {
+public class BasicTokenizerMethodizedTest {
 
     @Test
     public void testTokenize() {
@@ -17,7 +17,7 @@ public class BasicTokenizerTest {
         utf8Buffer.writeCodepoints(data);
         utf8Buffer.calculateLengthAndEndOffset().rewind();
 
-        BasicTokenizer tokenizer = new BasicTokenizer();
+        BasicTokenizerMethodized tokenizer = new BasicTokenizerMethodized();
 
         TokenizerListenerIndexImpl listenerImpl = new TokenizerListenerIndexImpl(1024);
         tokenizer.tokenize(utf8Buffer, listenerImpl);
@@ -26,7 +26,7 @@ public class BasicTokenizerTest {
 
         assertEquals(0, listenerImpl.startOffsets[0]);
         assertEquals(1, listenerImpl.endOffsets[0]);
-        assertEquals(com.jenkov.parsers.TokenTypes.WHITE_SPACE, listenerImpl.tokenTypes[0]);
+        assertEquals(TokenTypes.WHITE_SPACE, listenerImpl.tokenTypes[0]);
 
         assertEquals(1, listenerImpl.startOffsets[1]);
         assertEquals(2, listenerImpl.endOffsets[1]);
@@ -34,7 +34,7 @@ public class BasicTokenizerTest {
 
         assertEquals(2, listenerImpl.startOffsets[2]);
         assertEquals(3, listenerImpl.endOffsets[2]);
-        assertEquals(com.jenkov.parsers.TokenTypes.WHITE_SPACE, listenerImpl.tokenTypes[2]);
+        assertEquals(TokenTypes.WHITE_SPACE, listenerImpl.tokenTypes[2]);
 
         assertEquals(3, listenerImpl.startOffsets[3]);
         assertEquals(4, listenerImpl.endOffsets[3]);
@@ -42,15 +42,15 @@ public class BasicTokenizerTest {
 
         assertEquals(4, listenerImpl.startOffsets[4]);
         assertEquals(5, listenerImpl.endOffsets[4]);
-        assertEquals(com.jenkov.parsers.TokenTypes.WHITE_SPACE, listenerImpl.tokenTypes[4]);
+        assertEquals(TokenTypes.WHITE_SPACE, listenerImpl.tokenTypes[4]);
 
         assertEquals(5, listenerImpl.startOffsets[5]);
         assertEquals(30, listenerImpl.endOffsets[5]);
-        assertEquals(com.jenkov.parsers.TokenTypes.QUOTED_TOKEN, listenerImpl.tokenTypes[5]);
+        assertEquals(TokenTypes.QUOTED_TOKEN, listenerImpl.tokenTypes[5]);
 
         assertEquals(30, listenerImpl.startOffsets[6]);
         assertEquals(31, listenerImpl.endOffsets[6]);
-        assertEquals(com.jenkov.parsers.TokenTypes.WHITE_SPACE, listenerImpl.tokenTypes[6]);
+        assertEquals(TokenTypes.WHITE_SPACE, listenerImpl.tokenTypes[6]);
 
         assertEquals(31, listenerImpl.startOffsets[7]);
         assertEquals(32, listenerImpl.endOffsets[7]);
@@ -58,7 +58,7 @@ public class BasicTokenizerTest {
 
         assertEquals(32, listenerImpl.startOffsets[8]);
         assertEquals(33, listenerImpl.endOffsets[8]);
-        assertEquals(com.jenkov.parsers.TokenTypes.WHITE_SPACE, listenerImpl.tokenTypes[8]);
+        assertEquals(TokenTypes.WHITE_SPACE, listenerImpl.tokenTypes[8]);
 
         assertEquals(33, listenerImpl.startOffsets[9]);
         assertEquals(34, listenerImpl.endOffsets[9]);
@@ -66,7 +66,7 @@ public class BasicTokenizerTest {
 
         assertEquals(34, listenerImpl.startOffsets[10]);
         assertEquals(37, listenerImpl.endOffsets[10]);
-        assertEquals(com.jenkov.parsers.TokenTypes.ALPHABETIC, listenerImpl.tokenTypes[10]);
+        assertEquals(TokenTypes.ALPHABETIC, listenerImpl.tokenTypes[10]);
 
         assertEquals(37, listenerImpl.startOffsets[11]);
         assertEquals(38, listenerImpl.endOffsets[11]);
@@ -78,7 +78,7 @@ public class BasicTokenizerTest {
 
         assertEquals(39, listenerImpl.startOffsets[13]);
         assertEquals(45, listenerImpl.endOffsets[13]);
-        assertEquals(com.jenkov.parsers.TokenTypes.ALPHA_NUMERIC, listenerImpl.tokenTypes[13]);
+        assertEquals(TokenTypes.ALPHA_NUMERIC, listenerImpl.tokenTypes[13]);
 
         assertEquals(45, listenerImpl.startOffsets[14]);
         assertEquals(46, listenerImpl.endOffsets[14]);
@@ -86,7 +86,7 @@ public class BasicTokenizerTest {
 
         assertEquals(46, listenerImpl.startOffsets[15]);
         assertEquals(51, listenerImpl.endOffsets[15]);
-        assertEquals(com.jenkov.parsers.TokenTypes.ALPHA_NUMERIC, listenerImpl.tokenTypes[13]);
+        assertEquals(TokenTypes.ALPHA_NUMERIC, listenerImpl.tokenTypes[13]);
 
         assertEquals(51, listenerImpl.startOffsets[16]);
         assertEquals(52, listenerImpl.endOffsets[16]);
