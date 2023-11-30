@@ -24,11 +24,19 @@ public class Utf8Buffer {
         this(data, 0, data.length);
     }
     public Utf8Buffer(byte [] data, int offset, int length) {
-        this.buffer = data;
+        this.buffer      = data;
         this.offset      = offset;
         this.tempOffset  = offset;
         this.length      = length;
         this.endOffset   = offset + length;
+    }
+
+    public Utf8Buffer clear() {
+        this.offset     = 0;
+        this.tempOffset = 0;
+        this.length     = 0;
+        this.endOffset  = 0;
+        return this;
     }
 
     public Utf8Buffer rewind() {
@@ -51,7 +59,7 @@ public class Utf8Buffer {
     public int writeCodepoints(String characters) {
         int bytesWritten = 0;
         for( int i = 0; i < characters.length(); i++){
-            bytesWritten += writeCodepoint(characters.charAt(i));
+            bytesWritten += writeCodepoint(characters.codePointAt(i));
         }
         return bytesWritten;
     }

@@ -1,6 +1,5 @@
 package com.jenkov.parsers.tokenizers;
 
-import com.jenkov.parsers.TokenTypes;
 import com.jenkov.parsers.unicode.Utf8Buffer;
 import org.junit.jupiter.api.Test;
 
@@ -10,7 +9,9 @@ public class BasicTokenizerMethodizedTest {
 
     @Test
     public void testTokenize() {
-        String data = " + - \"this is a quoted token \" * &abc()def349.87iuy:899";
+        String data = " + - \"this is a quoted token \" * &abc()def349.87iuy:899/*abc*/";
+
+        System.out.println(data.length());
 
         Utf8Buffer utf8Buffer = new Utf8Buffer(new byte[1024], 0, 1024);
 
@@ -22,7 +23,7 @@ public class BasicTokenizerMethodizedTest {
         TokenizerListenerIndexImpl listenerImpl = new TokenizerListenerIndexImpl(1024);
         tokenizer.tokenize(utf8Buffer, listenerImpl);
 
-        assertEquals(18, listenerImpl.nextIndex);
+        assertEquals(19, listenerImpl.nextIndex);
 
         assertEquals(0, listenerImpl.startOffsets[0]);
         assertEquals(1, listenerImpl.endOffsets[0]);
@@ -95,6 +96,10 @@ public class BasicTokenizerMethodizedTest {
         assertEquals(52, listenerImpl.startOffsets[17]);
         assertEquals(55, listenerImpl.endOffsets[17]);
         assertEquals(TokenTypes.NUMERIC, listenerImpl.tokenTypes[17]);
+
+        assertEquals(55, listenerImpl.startOffsets[18]);
+        assertEquals(62, listenerImpl.endOffsets[18]);
+        assertEquals(TokenTypes.COMMENT, listenerImpl.tokenTypes[18]);
 
 
         //String data = " + - \"this is a quoted token \" * &abc()def349.87iuy:899";

@@ -11,7 +11,7 @@ import com.jenkov.parsers.unicode.Utf8Buffer;
  * - numeric
  * - alphanumeric
  * - quoted tokens
- *
+ * - multi-line comments
  *
  * This implementation uses a method to parse each class of tokens.
  */
@@ -51,12 +51,36 @@ public class BasicTokenizerMethodized {
                     tokenStartOffset = buffer.tempOffset;
                     break;
                 }
-                case '!', '#', '$', '%', '&', '(', ')', '*', '+', '-', '.', '/', ':', ';', '<', '=', '>', '?', '@', '[', '\\', ']', '^', '_' : {
+                case '!', '#', '$', '%', '&', '(', ')', '*', '+', '-', '.', ':', ';', '<', '=', '>', '?', '@', '[', '\\', ']', '^', '_' : {
                     tokenType = nextCodePoint ;
                     listener.token(buffer, tokenStartOffset, tokenStartOffset+1, tokenType);
                     tokenStartOffset = buffer.tempOffset;
 
                     break;
+                }
+                case '/' : {
+
+                    //check next character
+                    tempOffsetMark = buffer.tempOffset;
+                    int nextNextCodePoint = buffer.nextCodepoint();
+
+                    if(nextNextCodePoint == '*'){
+                        //this is the beginning of a multiline comment
+                        tokenType = TokenTypes.COMMENT;
+                        parseComment(buffer);
+                        listener.token(buffer, tokenStartOffset, buffer.tempOffset, tokenType);
+                        tokenStartOffset = buffer.tempOffset;
+                    } else {
+                        //not a comment - then it's a single character token of /
+                        tokenType = nextCodePoint;
+                        listener.token(buffer, tokenStartOffset, tokenStartOffset+1, tokenType);
+
+                        buffer.tempOffset = tempOffsetMark;
+                        tokenStartOffset  = tempOffsetMark;
+                        //tokenStartOffset  = buffer.tempOffset;
+                    }
+                    break;
+
                 }
                 case '"' : {
                     parseQuotedToken(buffer);
@@ -71,6 +95,27 @@ public class BasicTokenizerMethodized {
         //if(tempOffsetMark - tokenStartOffset > 0) {
         if(buffer.tempOffset - tokenStartOffset > 0) {
             listener.token(buffer, tokenStartOffset, buffer.tempOffset, tokenType);
+        }
+    }
+
+    private void parseComment(Utf8Buffer buffer) {
+        boolean endOfCommentTokenFound = false;
+        while(buffer.hasMoreBytes() && !endOfCommentTokenFound) {
+            int nextCodePoint = buffer.nextCodepoint();
+
+            if(nextCodePoint == '*') {
+                if(!buffer.hasMoreBytes()) {
+                    throw new RuntimeException("End of comment not found before end of input found");
+                }
+                int tempOffsetMark2 = buffer.tempOffset;
+                int nextNextCodePoint = buffer.nextCodepoint();
+                if(nextNextCodePoint == '/'){
+                    endOfCommentTokenFound = true;
+                } else {
+                    // next char was not / (not end of comment), so move one char back and parse normally from there
+                    buffer.tempOffset = tempOffsetMark2;
+                }
+            }
         }
     }
 

@@ -14,5 +14,7 @@ public class TokenTypes {
     public static final int QUOTED_TOKEN = 4;
     public static final int SINGLE_CHARACTER_TOKEN = 5;
 
+    public static final int COMMENT = 6;
+
 
 }

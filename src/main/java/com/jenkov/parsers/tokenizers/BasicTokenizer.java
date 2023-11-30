@@ -57,7 +57,7 @@ public class BasicTokenizer {
                     tokenType |= TokenTypes.ALPHABETIC ;
                     break;
                 }
-                case '!', '#', '$', '%', '&', '(', ')', '*', '+', '-', '.', '/', ':', ';', '<', '=', '>', '?', '@', '[', '\\', ']', '^', '_' : {
+                case '!', '#', '$', '%', '&', '(', ')', '*', '+', '-', '.', ':', ';', '<', '=', '>', '?', '@', '[', '\\', ']', '^', '_' : {
                     if(tokenType != TokenTypes.NO_TYPE_YET) {
                        listener.token(buffer, tokenStartOffset, tempOffsetMark, tokenType);
                        tokenStartOffset = tempOffsetMark;
@@ -68,8 +68,6 @@ public class BasicTokenizer {
                     break;
                 }
                 case '"' : {
-
-                    //finish current token first?
                     if( tokenType != TokenTypes.NO_TYPE_YET ) {
                         listener.token(buffer, tokenStartOffset, tempOffsetMark, tokenType);
                         tokenType = TokenTypes.NO_TYPE_YET;
@@ -77,10 +75,30 @@ public class BasicTokenizer {
                     }
                     tokenType = TokenTypes.QUOTED_TOKEN;
                     parseQuotedToken(buffer);
+                    break;
+                }
+                case '/' : {
 
-                    //todo does this even make sense?
-                    //listener.token(buffer, tempOffsetMark, buffer.tempOffset, TokenTypes.QUOTED_TOKEN);
-                    //tokenStartOffset = buffer.tempOffset;
+                    if( tokenType != TokenTypes.NO_TYPE_YET) {
+                        listener.token(buffer, tokenStartOffset, tempOffsetMark, tokenType);
+                        tokenType = TokenTypes.NO_TYPE_YET;
+                        tokenStartOffset = tempOffsetMark;
+                    }
+
+                    int tempOffsetMark2 = buffer.tempOffset;
+                    int nextNextCodePoint = buffer.nextCodepoint();
+                    if(nextNextCodePoint == '*') {
+                        tokenType = TokenTypes.COMMENT;
+                        parseComment(buffer);
+                    } else {
+                        // The / char was a single char token - not a comment begin.
+                        tokenType = nextCodePoint;
+                        listener.token(buffer, tokenStartOffset, tokenStartOffset+1, tokenType);
+
+                        buffer.tempOffset = tempOffsetMark2;
+                        tokenStartOffset  = tempOffsetMark2;
+                        tokenType = TokenTypes.NO_TYPE_YET;
+                    }
                     break;
                 }
             }
@@ -91,6 +109,28 @@ public class BasicTokenizer {
             listener.token(buffer, tokenStartOffset, buffer.tempOffset, tokenType);
         }
     }
+
+    private void parseComment(Utf8Buffer buffer) {
+        boolean endOfCommentTokenFound = false;
+        while(buffer.hasMoreBytes() && !endOfCommentTokenFound) {
+            int nextCodePoint = buffer.nextCodepoint();
+
+            if(nextCodePoint == '*') {
+                if(!buffer.hasMoreBytes()) {
+                    throw new RuntimeException("End of comment not found before end of input found");
+                }
+                int tempOffsetMark2 = buffer.tempOffset;
+                int nextNextCodePoint = buffer.nextCodepoint();
+                if(nextNextCodePoint == '/'){
+                    endOfCommentTokenFound = true;
+                } else {
+                    // next char was not / (not end of comment), so move one char back and parse normally from there
+                    buffer.tempOffset = tempOffsetMark2;
+                }
+            }
+        }
+    }
+
 
     private void parseQuotedToken(Utf8Buffer buffer) {
         int tempOffsetMark = buffer.tempOffset;
