@@ -25,6 +25,10 @@ public class BasicTokenizer {
 
                 tempOffsetMark = buffer.tempOffset;
             int nextCodePoint  = buffer.nextCodepoint();
+            //if(nextCodePoint == 0) {
+            //    throw new RuntimeException("Error at byte offset: " + tempOffsetMark);
+            //}
+            //System.out.print((char) nextCodePoint);
 
             switch(nextCodePoint) {
                 // check if quoted token. If it is - call parseQuotedToken();
@@ -57,7 +61,7 @@ public class BasicTokenizer {
                     tokenType |= TokenTypes.ALPHABETIC ;
                     break;
                 }
-                case '!', '#', '$', '%', '&', '(', ')', '*', '+', '-', '.', ':', ';', '<', '=', '>', '?', '@', '[', '\\', ']', '^', '_' : {
+                case '!', '#', '$', '%', '&', '(', ')', '*', '+', ',', '-', '.', ':', ';', '<', '=', '>', '?', '@', '[', '\\', ']', '^', '_', '{', '|', '}' : {
                     if(tokenType != TokenTypes.NO_TYPE_YET) {
                        listener.token(buffer, tokenStartOffset, tempOffsetMark, tokenType);
                        tokenStartOffset = tempOffsetMark;
@@ -100,6 +104,9 @@ public class BasicTokenizer {
                         tokenType = TokenTypes.NO_TYPE_YET;
                     }
                     break;
+                }
+                default : {
+                    throw new RuntimeException("Invalid character:: [" + (char) nextCodePoint + "](" + nextCodePoint + ") + at byte offset " + tempOffsetMark);
                 }
             }
         }

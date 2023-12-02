@@ -51,7 +51,7 @@ public class BasicTokenizerMethodized {
                     tokenStartOffset = buffer.tempOffset;
                     break;
                 }
-                case '!', '#', '$', '%', '&', '(', ')', '*', '+', '-', '.', ':', ';', '<', '=', '>', '?', '@', '[', '\\', ']', '^', '_' : {
+                case '!', '#', '$', '%', '&', '(', ')', '*', '+', ',', '-', '.', ':', ';', '<', '=', '>', '?', '@', '[', '\\', ']', '^', '_' : {
                     tokenType = nextCodePoint ;
                     listener.token(buffer, tokenStartOffset, tokenStartOffset+1, tokenType);
                     tokenStartOffset = buffer.tempOffset;
@@ -88,6 +88,9 @@ public class BasicTokenizerMethodized {
                     listener.token(buffer, tokenStartOffset, buffer.tempOffset, TokenTypes.QUOTED_TOKEN);
                     tokenStartOffset = buffer.tempOffset;
                     break;
+                }
+                default : {
+                    throw new RuntimeException("Invalid character:: [" + (char) nextCodePoint + "](" + nextCodePoint + ") + at byte offset " + tempOffsetMark);
                 }
             }
         }
