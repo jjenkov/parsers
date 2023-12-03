@@ -53,7 +53,7 @@ public class BasicTokenizer {
                 }
                 case 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
                      'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z' : {
-                    if(tokenType < TokenTypes.NUMERIC || tokenType > TokenTypes.ALPHA_NUMERIC) {
+                    if(tokenType < TokenTypes.NO_TYPE_YET || tokenType > TokenTypes.ALPHA_NUMERIC) {
                         listener.token(buffer, tokenStartOffset, tempOffsetMark, tokenType);
                         tokenStartOffset = tempOffsetMark;
                         tokenType =  TokenTypes.NO_TYPE_YET;

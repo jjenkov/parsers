@@ -181,4 +181,23 @@ public class BasicTokenizerTest {
         assertEquals(TokenTypes.WHITE_SPACE, listenerImpl.tokenTypes[13]);
 
     }
+
+    @Test
+    public void testSpecificString() {
+        String data = "select /* this is a comment */*from dept;";
+
+        Utf8Buffer utf8Buffer = new Utf8Buffer(new byte[1024], 0, 1024);
+
+        utf8Buffer.writeCodepoints(data);
+        utf8Buffer.calculateLengthAndEndOffset().rewind();
+
+        BasicTokenizer tokenizer = new BasicTokenizer();
+
+        TokenizerListenerIndexImpl listenerImpl = new TokenizerListenerIndexImpl(1024);
+        tokenizer.tokenize(utf8Buffer, listenerImpl);
+
+        assertEquals(8, listenerImpl.nextIndex);
+
+
+    }
 }
