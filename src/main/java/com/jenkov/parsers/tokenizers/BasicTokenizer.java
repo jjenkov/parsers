@@ -31,7 +31,6 @@ public class BasicTokenizer {
             //System.out.print((char) nextCodePoint);
 
             switch(nextCodePoint) {
-                // check if quoted token. If it is - call parseQuotedToken();
                 case ' ', '\t', '\n', '\r' : {
                     if(tokenType > TokenTypes.NO_TYPE_YET) {
                         listener.token(buffer, tokenStartOffset, tempOffsetMark, tokenType);
@@ -71,6 +70,7 @@ public class BasicTokenizer {
 
                     break;
                 }
+                // check if quoted token. If it is - call parseQuotedToken();
                 case '"' : {
                     if( tokenType != TokenTypes.NO_TYPE_YET ) {
                         listener.token(buffer, tokenStartOffset, tempOffsetMark, tokenType);

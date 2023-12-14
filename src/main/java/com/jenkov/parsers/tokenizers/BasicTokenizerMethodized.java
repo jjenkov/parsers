@@ -29,7 +29,6 @@ public class BasicTokenizerMethodized {
             int nextCodePoint  = buffer.nextCodepoint();
 
             switch(nextCodePoint) {
-                // check if quoted token. If it is - call parseQuotedToken();
                 case ' ', '\t', '\n', '\r' : {
                     parseWhiteSpace(buffer);
                     tokenType = TokenTypes.WHITE_SPACE;
@@ -82,6 +81,7 @@ public class BasicTokenizerMethodized {
                     break;
 
                 }
+                // check if quoted token. If it is - call parseQuotedToken();
                 case '"' : {
                     parseQuotedToken(buffer);
                     tokenType = TokenTypes.QUOTED_TOKEN;
